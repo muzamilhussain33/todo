@@ -58,12 +58,25 @@ const Todo = () => {
         })
     }
 
+    // *** NEW FUNCTION ***
+    // Function to edit the text of a todo item
+    const editTodo = (id, newText) => {
+        setTodoList((prevTodos) => {
+            return prevTodos.map((todo) => {
+                if (todo.id === id) {
+                    return { ...todo, text: newText } // Update the text
+                }
+                return todo;
+            })
+        })
+    }
+
     useEffect(() => {
         localStorage.setItem("todos", JSON.stringify(todoList));
     }, [todoList]) // Dependency is now the camelCase 'todoList'
 
     return (
-        <div className='bg-white place-self-center w-10/12 sm:w-11/12 max-w-3xl flex flex-col p-7 min-h-[550px] rounded-xl'>
+        <div className='bg-white w-10/12 sm:w-11/12 max-w-6xl flex flex-col sm:p-7 p-3 min-h-[550px] rounded-xl '>
             {/*---------Title-------------*/}
             <div className='flex items-center mt-7 gap-2'>
                 <img className='w-8' src={todo_icon} alt="Todo List Icon" />
@@ -79,12 +92,11 @@ const Todo = () => {
                     type="text"
                     placeholder='Add your task'
                 />
-                <button onClick={add} className='border-none rounded-full bg-red-600 w-20 sm:w-32 h-14 text-white text-ld font-medium cursor-pointer'>ADD +</button>
+                <button onClick={add} className='border-none rounded-full bg-red-600 w-20 sm:w-32 h-14 text-white text-ld font-medium cursor-pointer active:scale-90'>ADD +</button>
             </div>
 
             {/*-----------To do items-------------*/}
             <div>
-                {/* *** IMPORTANT FIX: Use item.id for the key, not index *** */}
                 {todoList.map((item) => {
                     return <Todoitems
                         key={item.id}
@@ -93,6 +105,7 @@ const Todo = () => {
                         iscomplete={item.iscomplete}
                         deleteTodo={deleteTodo}
                         toggle={toggle}
+                        editTodo={editTodo} // Pass the new function as a prop
                     />
                 })}
             </div>
