@@ -68,7 +68,7 @@ function Todoitems({ text, id, iscomplete, deleteTodo, toggle, editTodo }) {
         {isEditing ? (
           <button
             onClick={handleSave}
-            className='bg-green-500 text-white px-3 py-2 rounded text-sm font-medium active:scale-95'
+            className='bg-green-500 text-white px-3 py-1 rounded text-sm font-medium active:scale-95'
           >
             Save
           </button>

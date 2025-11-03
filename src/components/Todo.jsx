@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useMemo } from 'react' // Import useMemo
 import todo_icon from '../assets/todo-list.png'
 import Todoitems from './Todoitems'
 
@@ -17,6 +17,7 @@ const loadTodos = () => {
 const Todo = () => {
     // Use the safe loader function and camelCase for variable name
     const [todoList, setTodoList] = useState(loadTodos());
+    const [filter, setFilter] = useState('all'); // *** NEW: State for filtering
     const inputRef = useRef();
 
     const add = () => {
@@ -58,7 +59,6 @@ const Todo = () => {
         })
     }
 
-    // *** NEW FUNCTION ***
     // Function to edit the text of a todo item
     const editTodo = (id, newText) => {
         setTodoList((prevTodos) => {
@@ -75,12 +75,62 @@ const Todo = () => {
         localStorage.setItem("todos", JSON.stringify(todoList));
     }, [todoList]) // Dependency is now the camelCase 'todoList'
 
+
+    // *** NEW: Filter logic ***
+    // We use useMemo to avoid re-calculating this on every render
+    const filteredTodos = useMemo(() => {
+      if (filter === 'active') {
+        return todoList.filter(todo => !todo.iscomplete);
+      }
+      if (filter === 'completed') {
+        return todoList.filter(todo => todo.iscomplete);
+      }
+      return todoList; // 'all'
+    }, [todoList, filter]); // Re-run only if todoList or filter changes
+
+
+    // *** NEW: Helper function for button styling ***
+    const getButtonClass = (buttonFilter) => {
+      return `px-4 py-1 rounded-md text-sm font-medium transition-colors ${
+        filter === buttonFilter
+          ? 'bg-red-600 text-white'
+          : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+      }`;
+    };
+
+
     return (
         <div className='bg-white w-10/12 sm:w-11/12 max-w-6xl flex flex-col sm:p-7 p-3 min-h-[550px] rounded-xl '>
             {/*---------Title-------------*/}
-            <div className='flex items-center mt-7 gap-2'>
-                <img className='w-8' src={todo_icon} alt="Todo List Icon" />
-                <h1 className='text-3xl font-semibold'>To-Do List</h1>
+            {/* *** UPDATED: Title section with filter buttons *** */}
+            <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between mt-7 gap-4 sm:gap-2'>
+                {/* Left Side: Title */}
+                <div className='flex items-center gap-2'>
+                    <img className='w-8' src={todo_icon} alt="Todo List Icon" />
+                    <h1 className='text-3xl font-semibold'>To-Do List</h1>
+                </div>
+
+                {/* Right Side: Filter Buttons */}
+                <div className='flex gap-2'>
+                    <button
+                      onClick={() => setFilter('all')}
+                      className={getButtonClass('all')}
+                    >
+                      All
+                    </button>
+                    <button
+                      onClick={() => setFilter('active')}
+                      className={getButtonClass('active')}
+                    >
+                      Active
+                    </button>
+                    <button
+                      onClick={() => setFilter('completed')}
+                      className={getButtonClass('completed')}
+                    >
+                      Completed
+                    </button>
+                </div>
             </div>
 
             {/*-----------input box-------------*/}
@@ -97,7 +147,8 @@ const Todo = () => {
 
             {/*-----------To do items-------------*/}
             <div>
-                {todoList.map((item) => {
+                {/* *** UPDATED: Map over filteredTodos instead of todoList *** */}
+                {filteredTodos.map((item) => {
                     return <Todoitems
                         key={item.id}
                         text={item.text}
