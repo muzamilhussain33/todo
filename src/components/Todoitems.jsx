@@ -1,27 +1,21 @@
-import React, { useState } from 'react' // Import useState
+import React, { useState } from 'react'
 import Tick from '../assets/tick.svg'
 import Untick from '../assets/un_tick.png'
 import Delete from '../assets/delete.svg'
 
-// Accept the new 'editTodo' prop
 function Todoitems({ text, id, iscomplete, deleteTodo, toggle, editTodo }) {
 
-  // State to track if this item is being edited
   const [isEditing, setIsEditing] = useState(false);
-  // State to hold the text value during editing
   const [editText, setEditText] = useState(text);
 
-  // Handle the save action
   const handleSave = () => {
-    // Don't save if the text is empty (after trimming)
     if (editText.trim() === '') {
         return;
     }
     editTodo(id, editText.trim());
-    setIsEditing(false); // Exit edit mode
+    setIsEditing(false); 
   }
 
-  // Handle 'Enter' key press in edit input
   const handleEditKeyDown = (event) => {
     if (event.key === 'Enter') {
       handleSave();
@@ -29,14 +23,13 @@ function Todoitems({ text, id, iscomplete, deleteTodo, toggle, editTodo }) {
   }
 
   return (
-    <div className='flex items-center my-4 w-full gap-2 p-3 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-200 '>
+    <div className='flex items-center my-3 w-full gap-3 p-3 rounded-lg border border-slate-200 bg-white hover:shadow-md transition-all duration-200'>
 
-      {/* Tick/Untick button (always visible) */}
+      {/* Tick/Untick button */}
       <div
-        // *** CHANGE 1: Exit edit mode if toggled ***
         onClick={() => {
           toggle(id);
-          setIsEditing(false); // Exit edit mode on toggle
+          setIsEditing(false); 
         }}
         className='flex items-center cursor-pointer flex-shrink-0'
         role="button"
@@ -45,47 +38,72 @@ function Todoitems({ text, id, iscomplete, deleteTodo, toggle, editTodo }) {
         <img src={iscomplete ? Tick : Untick} className='w-7' alt={iscomplete ? "Completed" : "Mark as complete"} />
       </div>
 
-      {/* Conditional rendering: Show input if editing, otherwise show text */}
-      <div className='flex-1 min-w-0 mx-4'>
+      {/* Text / Input Field */}
+      <div className='flex-1 min-w-0 mx-2 sm:mx-4'>
         {isEditing ? (
           <input
             type="text"
             value={editText}
             onChange={(e) => setEditText(e.target.value)}
             onKeyDown={handleEditKeyDown}
-            className='w-full bg-gray-100 p-2 border rounded-md outline-none'
-            autoFocus // Automatically focus the input when it appears
+            className='w-full bg-slate-50 p-2 border border-slate-300 rounded-md outline-none'
+            autoFocus 
           />
         ) : (
-          <p className={`text-slate-600 break-all text-[18px] ${iscomplete ? "line-through" : ""}`}>
+          /*
+           * UPDATED BEHAVIOR:
+           * If the task is complete, it gets a line-through, faded color,
+           * and a 'cursor-not-allowed' icon on hover.
+           */
+          <p className={`
+            text-slate-700 break-all text-lg transition-colors
+            ${iscomplete 
+              ? "line-through text-slate-400 cursor-not-allowed" 
+              : ""
+            }
+          `}>
             {text}
           </p>
         )}
       </div>
 
-      {/* Conditional rendering: Show Save button if editing, otherwise Edit button */}
+      {/* Edit / Save Buttons */}
       <div className='flex-shrink-0'>
         {isEditing ? (
           <button
             onClick={handleSave}
-            className='bg-green-500 text-white px-3 py-1 rounded text-sm font-medium active:scale-95'
+            className='bg-[#881e1e] text-white px-3 py-1 rounded text-sm font-medium hover:bg-[#630303] transition-colors active:scale-95'
           >
             Save
           </button>
         ) : (
-          // *** CHANGE 2: Only show Edit button if NOT complete ***
-          !iscomplete && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className='bg-pink-600 text-white px-3 py-1 rounded text-sm font-medium active:scale-95'
-            >
-              Edit
-            </button>
-          )
+          /*
+           * UPDATED BEHAVIOR:
+           * The Edit button is always shown.
+           * If 'iscomplete' is true, it's disabled and styled to look "blury" (opacity-50)
+           * and shows a 'cursor-not-allowed' icon.
+           */
+          <button
+            onClick={() => {
+              if (!iscomplete) { // Only enter edit mode if not complete
+                setIsEditing(true);
+              }
+            }}
+            className={`
+              bg-orange-500 text-white px-3 py-1 rounded text-sm font-medium transition-all
+              ${iscomplete
+                ? 'opacity-50 cursor-not-allowed' // Disabled "blury" state
+                : 'hover:bg-orange-600 active:scale-95' // Active state
+              }
+            `}
+            disabled={iscomplete} // Add the disabled attribute
+          >
+            Edit
+          </button>
         )}
       </div>
 
-      {/* Delete button (always visible) */}
+      {/* Delete button */}
       <img
         onClick={() => { deleteTodo(id) }}
         src={Delete}
