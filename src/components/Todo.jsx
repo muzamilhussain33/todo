@@ -100,7 +100,7 @@ const Todo = () => {
 
 
     return (
-        <div className='bg-white w-10/12 sm:w-11/12 max-w-6xl flex flex-col sm:p-7 p-3 min-h-[550px] rounded-xl '>
+        <div className='bg-white w-11/12 sm:w-11/12 max-w-6xl flex flex-col sm:p-7 p-3 min-h-[550px] rounded-xl '>
             {/*---------Title-------------*/}
             {/* *** UPDATED: Title section with filter buttons *** */}
             <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between mt-7 gap-4 sm:gap-2'>
