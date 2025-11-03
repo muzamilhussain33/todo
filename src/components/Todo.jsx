@@ -107,7 +107,7 @@ const Todo = () => {
                 {/* Left Side: Title */}
                 <div className='flex items-center gap-2'>
                     <img className='w-8' src={todo_icon} alt="Todo List Icon" />
-                    <h1 className='text-3xl font-semibold'>To-Do List</h1>
+                    <h1 className='text-3xl font-semibold'>Daily Checks</h1>
                 </div>
 
                 {/* Right Side: Filter Buttons */}
