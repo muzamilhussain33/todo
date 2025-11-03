@@ -3,7 +3,8 @@ import Todo from './components/Todo'
 
 const App = () => {
   return (
-    <div className='grid p-4 min-h-screen'>
+    // Changed 'grid' to 'grid place-items-center' for better centering
+    <div className='grid place-items-center p-4 min-h-screen'>
       <Todo/>
     </div>
   )
