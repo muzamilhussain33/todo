@@ -9,7 +9,7 @@ function Todoitems({text, id, iscomplete, deleteTodo, toggle}) {
 
       <div onClick={() => {toggle(id)}} className='flex flex-1 items-center cursor-pointer'>
         <img src={iscomplete ? Tick :Untick } className='w-7'/>
-        <p className={`text-slate-700 ml-4  w-[100px] sm:w-10/12 text-[17Spx] ${iscomplete ? "line-through" :""}`}>{text}</p>
+        <p className={`text-slate-700 ml-4 wrap-anywhere w-[100px] sm:w-10/12 text-[17Spx] ${iscomplete ? "line-through" :""}`}>{text}</p>
       </div>
 
         <img onClick={() => {deleteTodo(id)}} src={Delete} className='w-5 cursor-pointer'/>
